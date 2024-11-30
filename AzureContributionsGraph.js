@@ -1,13 +1,13 @@
 const organization = "raet";
 const apiVersion = "api-version=7.1";
 const apiTop = 10000;
-const minTime = "2024-01-01";
 
 var project = "";
+var minTime = "2024-01-01";
 var personalAccessToken = "";
 var authHeader = "";
 var headers = new Headers();
-var stats = {};
+var contributionChartData = {};
 var contributionChart = null;
 
 const fetchData = async (url) => {
@@ -34,8 +34,8 @@ const getPullRequests = async (repoId, page = 1) => {
 };
 
 const createUser = function (user) {
-    if (stats[user] === undefined) {
-        stats[user] = {
+    if (contributionChartData[user] === undefined) {
+        contributionChartData[user] = {
             "commits": 0,
             "pullRequestsCreated": 0,
             "pullRequestsReviewed": 0
@@ -57,7 +57,7 @@ const aggregateDataByUser = async () => {
                 commits.value.forEach(commit => {
                     const author = commit.author.email;
                     createUser(author);
-                    stats[author].commits = (stats[author].commits || 0) + 1;
+                    contributionChartData[author].commits = (contributionChartData[author].commits || 0) + 1;
                 });
                 page++;
             } while (commits.value.length === apiTop); // Continue if page is full (potentially more pages)
@@ -73,26 +73,23 @@ const aggregateDataByUser = async () => {
 
                     for (var i = 0; i < pr.reviewers.length; i++) {
                         const reviewer = pr.reviewers[i].uniqueName;
-                        if (reviewer == "janmac@youforce.net") {
-                            console.log(pr);
-                        }
                         createUser(reviewer);
-                        stats[reviewer].pullRequestsReviewed = (stats[reviewer].pullRequestsReviewed || 0) + 1;
+                        contributionChartData[reviewer].pullRequestsReviewed = (contributionChartData[reviewer].pullRequestsReviewed || 0) + 1;
                     }
 
-                    stats[creator].pullRequestsCreated = (stats[creator].pullRequestsCreated || 0) + 1;
+                    contributionChartData[creator].pullRequestsCreated = (contributionChartData[creator].pullRequestsCreated || 0) + 1;
                 });
                 page++;
             } while (pullRequests.value.length === apiTop); // Continue if page is full (potentially more pages)
         }
     }
 
-    console.log("Contributions graph data:", stats);
+    console.log("Contributions graph data:", contributionChartData);
 
-    const labels = Object.keys(stats);
-    const commits = Object.values(stats).map(item => item.commits);
-    const pullRequestsCreated = Object.values(stats).map(item => item.pullRequestsCreated);
-    const pullRequestsReviewed = Object.values(stats).map(item => item.pullRequestsReviewed);
+    const labels = Object.keys(contributionChartData);
+    const commits = Object.values(contributionChartData).map(item => item.commits);
+    const pullRequestsCreated = Object.values(contributionChartData).map(item => item.pullRequestsCreated);
+    const pullRequestsReviewed = Object.values(contributionChartData).map(item => item.pullRequestsReviewed);
 
     hideLoading();
     destroyChart();
@@ -141,9 +138,11 @@ const aggregateDataByUser = async () => {
 
 const scanButtonClicked = function () {
     project = document.getElementById("projectName").value;
-    console.log(project);
     personalAccessToken = document.getElementById("PATtoken").value;
-    console.log(personalAccessToken);
+    if (document.getElementById("startDate").value != "") {
+        minTime = document.getElementById("startDate").value;
+    }
+
     if (project !== "" && personalAccessToken !== "") {
         authHeader = 'Basic ' + btoa(':' + personalAccessToken);
         headers = new Headers({
@@ -173,6 +172,7 @@ const hideLoading = function () {
 }
 
 const destroyChart = function () {
+    contributionChartData = {};
     const ctx = document.getElementById('stackedBarChart').getContext('2d');
     if (contributionChart) {
         contributionChart.destroy();
@@ -180,7 +180,6 @@ const destroyChart = function () {
 }
 
 window.onload = (event) => {
-    console.log("page is fully loaded");
     document.getElementById("scanButton").addEventListener("click", (scanButtonClicked));
 };
 
