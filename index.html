@@ -18,7 +18,7 @@
             display: none;
         }
     </style>
-    <script src="AzureContributionsGraph.js"></script>
+    <script src="main.js"></script>
 </head>
 
 <body>
@@ -34,27 +34,35 @@
         <div class="panel-body">
             <div class="form-horizontal col-md-24">
                 <div class="form-group">
-                    <label for="projectName" class="col-sm-5 control-label">Azure DevOps Project Name</label>
+                    <label for="organization" class="col-sm-5 control-label">Azure Organization</label>
                     <div class="col">
-                        <input type="text" name="projectName" class="form-control" id="projectName"
-                            placeholder="e.g. EXP Sick Leave">
+                        <input type="text" name="organization" class="form-control" id="organization"
+                            placeholder="Your organization name in Azure">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="startDate" class="col-sm-5 control-label">Commits and PRs from date</label>
+                    <label for="projectName" class="col-sm-5 control-label">Azure DevOps Project Name</label>
+                    <div class="col">
+                        <input type="text" name="projectName" class="form-control" id="projectName"
+                            placeholder="Your Azure DevOps project name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="startDate" class="col-sm-5 control-label">Commits and Completed PRs from date
+                        YYYY-MM-DD</label>
                     <div class="col">
                         <input type="text" name="startDate" class="form-control" id="startDate"
                             placeholder="e.g. 2024-01-01">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="PATtoken" class="col-sm-5 control-label">Azure Personal Access Token <a
+                    <label for="PATtoken" class="col-sm-5 control-label">Azure Personal Access Token<a
                             href="https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows#create-a-pat"
-                            target="_blank">Learn
+                            target="_blank"> Learn
                             more here</a></label>
                     <div class="col">
                         <input type="text" name="PATtoken" class="form-control" id="PATtoken"
-                            placeholder="Personal Access Token">
+                            placeholder="Your Azure personal access token">
                     </div>
                 </div>
                 <div class="form-group">

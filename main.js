@@ -1,9 +1,9 @@
-const organization = "raet";
 const apiVersion = "api-version=7.1";
 const apiTop = 10000;
 
+var organization = "";
 var project = "";
-var minTime = "2024-01-01";
+var minTime = "";
 var personalAccessToken = "";
 var authHeader = "";
 var headers = new Headers();
@@ -139,11 +139,10 @@ const aggregateDataByUser = async () => {
 const scanButtonClicked = function () {
     project = document.getElementById("projectName").value;
     personalAccessToken = document.getElementById("PATtoken").value;
-    if (document.getElementById("startDate").value != "") {
-        minTime = document.getElementById("startDate").value;
-    }
+    organization = document.getElementById("organization").value;
+    minTime = document.getElementById("startDate").value;
 
-    if (project !== "" && personalAccessToken !== "") {
+    if (organization !== "" && project !== "" && personalAccessToken !== "" && minTime != "") {
         authHeader = 'Basic ' + btoa(':' + personalAccessToken);
         headers = new Headers({
             "Content-Type": "application/json",
@@ -157,7 +156,7 @@ const scanButtonClicked = function () {
             alert("Please check if the given Azure DevOps Project Name and Azure Personal Access Token are corrent and valid.");
         });
     } else {
-        alert("Pleae enter Azure DevOps Project Name and Azure Personal Access Token.");
+        alert("All the inputs are mandatory, please check if you provided correct values.");
     }
 }
 
